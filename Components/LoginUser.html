@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Mi Sitio Web</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 43px;
+            cursor: pointer;
+            color: #666;
+            user-select: none;
+        }
+
+        .password-toggle:hover {
+            color: #333;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+            padding: 10px;
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 8px;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            color: #666;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+            width: auto;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #764ba2;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e1e5e9;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 20px;
+        }
+
+        .social-login {
+            display: grid;
+            gap: 10px;
+        }
+
+        .social-btn {
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            color: #764ba2;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>Bienvenido</h1>
+            <p>Inicia sesión en tu cuenta</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✅ Login exitoso! Redirigiendo...
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email o Usuario</label>
+                <input type="text" id="email" name="email" autocomplete="email" required>
+                <div class="error-message" id="emailError">Por favor ingresa un email válido</div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" autocomplete="current-password" required>
+                <span class="password-toggle" id="togglePassword">👁️</span>
+                <div class="error-message" id="passwordError">La contraseña debe tener al menos 6 caracteres</div>
+            </div>
+
+            <div class="remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember"> Recordarme
+                </label>
+                <a href="#" class="forgot-password" id="forgotPassword">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                <div class="loading" id="loading"></div>
+                <span id="btnText">Iniciar Sesión</span>
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>o continúa con</span>
+        </div>
+
+        <div class="social-login">
+            <a href="#" class="social-btn" id="googleLogin">
+                🌐 Continuar con Google
+            </a>
+        </div>
+
+        <div class="register-link">
+            ¿No tienes cuenta? <a href="#" id="registerLink">Regístrate aquí</a>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const loginBtn = document.getElementById('loginBtn');
+        const loading = document.getElementById('loading');
+        const btnText = document.getElementById('btnText');
+        const successMessage = document.getElementById('successMessage');
+
+        // Usuarios demo para prueba
+        const demoUsers = [
+            { email: 'admin@test.com', password: '123456', name: 'Administrador' },
+            { email: 'user@test.com', password: 'password', name: 'Usuario Demo' },
+            { email: 'demo', password: 'demo', name: 'Usuario Demo' }
+        ];
+
+        // Toggle mostrar/ocultar contraseña
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Validación en tiempo real
+        emailInput.addEventListener('input', function() {
+            clearError('email');
+        });
+
+        passwordInput.addEventListener('input', function() {
+            clearError('password');
+        });
+
+        // Función para mostrar errores
+        function showError(field, message) {
+            const input = document.getElementById(field);
+            const errorDiv = document.getElementById(field + 'Error');
+            
+            input.classList.add('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        // Función para limpiar errores
+        function clearError(field) {
+            const input = document.getElementById(field);
+            const errorDiv = document.getElementById(field + 'Error');
+            
+            input.classList.remove('error');
+            errorDiv.style.display = 'none';
+        }
+
+        // Validación de email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Función de login
+        async function performLogin(email, password) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const user = demoUsers.find(u => 
+                        (u.email.toLowerCase() === email.toLowerCase()) && u.password === password
+                    );
+                    
+                    if (user) {
+                        resolve({ success: true, user: user });
+                    } else {
+                        resolve({ success: false, message: 'Email o contraseña incorrectos' });
+                    }
+                }, 1500); // Simular delay de red
+            });
+        }
+
+        // Manejo del formulario
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            let hasErrors = false;
+
+            // Limpiar errores previos
+            clearError('email');
+            clearError('password');
+
+            // Validaciones
+            if (!email) {
+                showError('email', 'Por favor ingresa tu email o usuario');
+                hasErrors = true;
+            } else if (email.includes('@') && !isValidEmail(email)) {
+                showError('email', 'Por favor ingresa un email válido');
+                hasErrors = true;
+            }
+
+            if (!password) {
+                showError('password', 'Por favor ingresa tu contraseña');
+                hasErrors = true;
+            } else if (password.length < 3) {
+                showError('password', 'La contraseña debe tener al menos 3 caracteres');
+                hasErrors = true;
+            }
+
+            if (hasErrors) return;
+
+            // Mostrar loading
+            loginBtn.disabled = true;
+            loading.style.display = 'inline-block';
+            btnText.textContent = 'Iniciando sesión...';
+
+            try {
+                const result = await performLogin(email, password);
+                
+                if (result.success) {
+                    // Login exitoso
+                    successMessage.style.display = 'block';
+                    btnText.textContent = '✅ ¡Éxito!';
+                    
+                    // Guardar sesión si "recordar" está marcado
+                    if (document.getElementById('remember').checked) {
+                        localStorage.setItem('rememberedUser', JSON.stringify({
+                            email: email,
+                            name: result.user.name
+                        }));
+                    }
+                    
+                    // Simular redirección
+                    setTimeout(() => {
+                        alert(`¡Bienvenido ${result.user.name}!\n\nEn un sitio real, serías redirigido al dashboard.`);
+                        
+                        // Aquí normalmente harías:
+                        // window.location.href = '/dashboard';
+                    }, 2000);
+                    
+                } else {
+                    // Login fallido
+                    showError('password', result.message);
+                }
+            } catch (error) {
+                showError('password', 'Error de conexión. Inténtalo de nuevo.');
+            } finally {
+                // Ocultar loading
+                setTimeout(() => {
+                    loginBtn.disabled = false;
+                    loading.style.display = 'none';
+                    btnText.textContent = 'Iniciar Sesión';
+                }, 1000);
+            }
+        });
+
+        // Cargar usuario recordado
+        window.addEventListener('load', function() {
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser) {
+                const user = JSON.parse(rememberedUser);
+                emailInput.value = user.email;
+                document.getElementById('remember').checked = true;
+            }
+        });
+
+        // Enlaces adicionales
+        document.getElementById('forgotPassword').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Funcionalidad de recuperación de contraseña.\n\nEn un sitio real, esto abriría un formulario de recuperación.');
+        });
+
+        document.getElementById('registerLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Funcionalidad de registro.\n\nEn un sitio real, esto te llevaría al formulario de registro.');
+        });
+
+        document.getElementById('googleLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Login con Google.\n\nEn un sitio real, esto iniciaría el flujo OAuth de Google.');
+        });
+
+        // Información para pruebas
+        console.log('=== USUARIOS DE PRUEBA ===');
+        console.log('Email: admin@test.com | Contraseña: 123456');
+        console.log('Email: user@test.com | Contraseña: password');
+        console.log('Usuario: demo | Contraseña: demo');
+    </script>
+</body>
+</html>
