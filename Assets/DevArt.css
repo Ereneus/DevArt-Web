@@ -164,18 +164,14 @@ body {
 .cart-icon{
     position: absolute;
     top: 15px;
-    right: 100px;
+    right: 170px;
     font-size: 1.5rem;
     color: var(--text-dark);
     text-decoration: none;
     transition: var(--transition);
 }
 
-.logo{
-    height: 20px;
-    margin-right: 20px;
-    left: 100px;
-}
+
 
 
 /* Carrusel */
