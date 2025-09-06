@@ -161,6 +161,23 @@ body {
     animation: slideInUp 1s ease-out 0.2s both;
 }
 
+.cart-icon{
+    position: absolute;
+    top: 15px;
+    right: 100px;
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.logo{
+    height: 20px;
+    margin-right: 20px;
+    left: 100px;
+}
+
+
 /* Carrusel */
 .Carrusel {
     margin: 6rem 0;
